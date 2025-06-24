@@ -1,3 +1,4 @@
+mod file;
 mod global_shortcut;
 mod single_instance;
 mod splash_screen;
@@ -17,6 +18,8 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             tray::init(app).unwrap();
             splash_screen::init(app).unwrap();
@@ -34,7 +37,11 @@ pub fn run() {
             backend_task: false,
         }))
         .on_window_event(window::event)
-        .invoke_handler(tauri::generate_handler![greet, splash_screen::set_complete])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            file::handle_dropfile,
+            splash_screen::set_complete
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
