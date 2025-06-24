@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <style>
+      html,
+      body {
+        background: transparent;
+      }
+      .container {
+        margin: 0;
+        padding-top: 10vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .logo {
+        height: 6em;
+        padding: 1.5em;
+        will-change: filter;
+        transition: 0.75s;
+      }
+
+      .logo.vite:hover {
+        filter: drop-shadow(0 0 2em #747bff);
+      }
+      .logo.tauri:hover {
+        filter: drop-shadow(0 0 2em #24c8db);
+      }
+      .logo.typescript:hover {
+        filter: drop-shadow(0 0 2em #2d79c7);
+      }
+      .row {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tauri used Splash!</h1>
+
+      <div class="row">
+        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
+        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
+        <img
+          src="/typescript.svg"
+          class="logo typescript"
+          alt="typescript logo"
+        />
+      </div>
+      <p>It was super effective!</p>
+    </div>
+  </body>
+</html>
