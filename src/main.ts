@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, TauriEvent } from '@tauri-apps/api/event';
 import { useSplashScreen } from "./useSplashScreen";
+import { HISTORY_FILES_KEY, store } from "./useStore";
 
 let greetInputEl: HTMLInputElement | null;
 let greetMsgEl: HTMLElement | null;
@@ -35,6 +36,21 @@ type DragEventPayload = {
   };
 }
 
+export interface FileInfo {
+  "accessed": number,
+  "created": number,
+  "ext": string,
+  "file_type": string,
+  "formatted_size": string,
+  "is_dir": boolean,
+  "is_file": boolean,
+  "modified": number,
+  "name": string,
+  "path": string,
+  "processing_result": string,
+  "size": number
+}
+
 listen<DragEventPayload>(TauriEvent.DRAG_DROP, async (event) => {
   const clientRect = areaEl?.getBoundingClientRect();
   if (!clientRect) return;
@@ -59,9 +75,23 @@ listen<DragEventPayload>(TauriEvent.DRAG_DROP, async (event) => {
   console.log("File paths:", paths);
   console.log("File dropped within the drop area bounds.");
 
-  await invoke("handle_dropfile", {
+  await invoke<FileInfo>("handle_dropfile", {
     path: paths[0],
-  }).then((response) => {
+  }).then(async (response) => {
     console.log("Response from handle_dropfile:", response);
+
+    const historyFiles = await store.get<FileInfo[]>(HISTORY_FILES_KEY);
+
+    historyFiles?.unshift(response);
+
+    const uniqueFiles = Array.from(new Set(historyFiles?.map(file => file.path)))
+      .map(path => historyFiles?.find(file => file.path === path));
+
+    await store.set(HISTORY_FILES_KEY, uniqueFiles);
+
+    files = await store.get<FileInfo[]>(HISTORY_FILES_KEY);
   })
 });
+
+let files = await store.get<FileInfo[]>(HISTORY_FILES_KEY);
+console.log("Files from store:", files);
