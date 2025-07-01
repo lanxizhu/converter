@@ -12,6 +12,7 @@
     "window-state:default",
     "global-shortcut:default",
     "dialog:default",
-    "fs:default"
+    "fs:default",
+    "store:default"
   ]
 }
